@@ -15,7 +15,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-14]
+        os: [ubuntu-latest, macos-14]
         arch: ['amd64']
         dotnet-version: ['8.0']
       fail-fast: false
@@ -66,25 +66,25 @@ jobs:
       
 
 
-#  publish:
-#    needs: build
-#    name: Publish Packages
-#    runs-on: ubuntu-latest
-#    if: github.ref == 'refs/heads/develop' && github.event_name != 'pull_request'
-#    steps:
-#    - name: Download nuget package artifact
-#      uses: actions/download-artifact@v3
-#      with:
-#        name: nugetPackages-${{github.ref_name}}
-#
-#    - name: Display structure of downloaded files
-#      run: ls -R
-#
-#    - name: Prep packages
-#      run: dotnet nuget add source --username Giorgi --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/Giorgi/index.json"
-#
-#    - name: Push package to GitHub packages
-#      run: dotnet nuget push "**/*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }}  --source "github"
+  publish:
+    needs: build
+    name: Publish Packages
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' && github.event_name != 'pull_request'
+    steps:
+    - name: Download nuget package artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: nugetPackages-${{github.ref_name}}
+
+    - name: Display structure of downloaded files
+      run: ls -R
+
+    - name: Prep packages
+      run: dotnet nuget add source --username tomasz-rutecki --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/Giorgi/index.json"
+
+    - name: Push package to GitHub packages
+      run: dotnet nuget push "**/*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }}  --source "github"
 #      
 #  Finish-Coveralls-Collection:
 #    needs: build
