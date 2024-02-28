@@ -82,7 +82,7 @@ jobs:
       run: ls -R
 
     - name: Prep packages
-      run: dotnet nuget add source --username tomasz-rutecki --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/tomasz.rutecki/index.json"
+      run: dotnet nuget add source --username tomasz-rutecki --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/tomasz-rutecki/index.json"
 
     - name: Push package to GitHub packages
       run: dotnet nuget push "**/*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }}  --source "github"
