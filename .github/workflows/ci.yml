@@ -48,17 +48,17 @@ jobs:
       env:
         CoverletOutputFormat: lcov
       run: dotnet test --configuration Release --verbosity normal --logger GitHubActions /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:BuildType=Full
-
-    - name: Coveralls Parallel
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.github_token }}
-        flag-name: run-${{ matrix.os }}
-        path-to-lcov: DuckDB.NET.Test/coverage.net8.0.info
-        parallel: true
+#
+#    - name: Coveralls Parallel
+#      uses: coverallsapp/github-action@master
+#      with:
+#        github-token: ${{ secrets.github_token }}
+#        flag-name: run-${{ matrix.os }}
+#        path-to-lcov: DuckDB.NET.Test/coverage.net8.0.info
+#        parallel: true
 
     - name: Upload Artifacts
-      if: matrix.os == 'ubuntu-latest' && github.event_name != 'pull_request' && github.actor == 'Giorgi'
+      if: matrix.os == 'ubuntu-latest' && github.event_name != 'pull_request'
       uses: actions/upload-artifact@v3
       with:
         name: nugetPackages-${{github.ref_name}}
@@ -66,33 +66,33 @@ jobs:
       
 
 
-  publish:
-    needs: build
-    name: Publish Packages
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop' && github.event_name != 'pull_request'
-    steps:
-    - name: Download nuget package artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: nugetPackages-${{github.ref_name}}
-
-    - name: Display structure of downloaded files
-      run: ls -R
-
-    - name: Prep packages
-      run: dotnet nuget add source --username Giorgi --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/Giorgi/index.json"
-
-    - name: Push package to GitHub packages
-      run: dotnet nuget push "**/*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }}  --source "github"
-      
-  Finish-Coveralls-Collection:
-    needs: build
-    name: Finish Coveralls Collection
-    runs-on: ubuntu-latest
-    steps:
-    - name: Coveralls Finished
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.github_token }}
-        parallel-finished: true
+#  publish:
+#    needs: build
+#    name: Publish Packages
+#    runs-on: ubuntu-latest
+#    if: github.ref == 'refs/heads/develop' && github.event_name != 'pull_request'
+#    steps:
+#    - name: Download nuget package artifact
+#      uses: actions/download-artifact@v3
+#      with:
+#        name: nugetPackages-${{github.ref_name}}
+#
+#    - name: Display structure of downloaded files
+#      run: ls -R
+#
+#    - name: Prep packages
+#      run: dotnet nuget add source --username Giorgi --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/Giorgi/index.json"
+#
+#    - name: Push package to GitHub packages
+#      run: dotnet nuget push "**/*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }}  --source "github"
+#      
+#  Finish-Coveralls-Collection:
+#    needs: build
+#    name: Finish Coveralls Collection
+#    runs-on: ubuntu-latest
+#    steps:
+#    - name: Coveralls Finished
+#      uses: coverallsapp/github-action@master
+#      with:
+#        github-token: ${{ secrets.github_token }}
+#        parallel-finished: true
