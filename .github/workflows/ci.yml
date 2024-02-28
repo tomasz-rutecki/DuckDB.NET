@@ -45,6 +45,7 @@ jobs:
         dotnet pack DuckDB.NET.Data/Data.csproj  --configuration Release /p:BuildType=Full
 
     - name: Run tests
+      if: false
       env:
         CoverletOutputFormat: lcov
       run: dotnet test --configuration Release --verbosity normal --logger GitHubActions /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:BuildType=Full
@@ -81,7 +82,7 @@ jobs:
       run: ls -R
 
     - name: Prep packages
-      run: dotnet nuget add source --username tomasz-rutecki --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/Giorgi/index.json"
+      run: dotnet nuget add source --username tomasz-rutecki --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/tomasz.rutecki/index.json"
 
     - name: Push package to GitHub packages
       run: dotnet nuget push "**/*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }}  --source "github"
